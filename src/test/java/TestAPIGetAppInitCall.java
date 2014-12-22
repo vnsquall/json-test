@@ -40,8 +40,8 @@ public class TestAPIGetAppInitCall {
         Response res = get("forms/index");
         assertEquals(200, res.getStatusCode());
 
-        String categoriesJson = res.asString();
-        JsonPath jp = new JsonPath(categoriesJson).setRoot("metadata");
+        String formsJson = res.asString();
+        JsonPath jp = new JsonPath(formsJson).setRoot("metadata");
         List<String> form_urls = jp.get("data.url");
 
         for(String form_url : form_urls){
