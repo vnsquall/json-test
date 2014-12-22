@@ -13,7 +13,7 @@ import static org.testng.Assert.assertEquals;
 /**
  * Created by vnsquall on 12/19/14.
  */
-public class TestAPIGetTeasers {
+public class TestAPIGetAndroidTeasers {
     @BeforeTest
     public void setup(){
         RestSetup.Setup();
@@ -44,33 +44,10 @@ public class TestAPIGetTeasers {
     public void test_001_AndroidTeasers(String url) {
         Response res = get(url);
         assertEquals(200, res.getStatusCode());
-        System.out.println("Get android Teaser: " + url + " successful");
-    }
-
-    @DataProvider(name = "getiOSTeasers")
-    public Object[][] getiOSTeasers() {
-        Response res = get("main/getteasersios/");
-        assertEquals(200, res.getStatusCode());
-        String teasersJson = res.asString();
-
-        JsonPath jp = new JsonPath(teasersJson).setRoot("metadata");
-        List<ArrayList<ArrayList<String>>> android_prod_urls = jp.get("data.data.attributes.image_list.product_url");
-        ArrayList<ArrayList<String>> urls = android_prod_urls.get(0);
-        Object[][] data = new Object[urls.size()][];
-        int index = 0;
-
-        for(ArrayList<String> url : urls){
-            String prod_url = url.get(0);
-            data[index] = new Object[]{prod_url};
-            index++;
+        if (res.getStatusCode() == 200) {
+            System.out.println("Get Android Teaser: " + url + " PASSED");
+        } else {
+            System.out.println("Get Android Teaser: " + url + " FAILED");
         }
-        return data;
-    }
-
-    @Test(dataProvider = "getiOSTeasers")
-    public void test_002_iOSTeasers(String url) {
-        Response res = get(url);
-        assertEquals(200, res.getStatusCode());
-        System.out.println("Get iOS Teaser: " + url + " successful");
     }
 }
