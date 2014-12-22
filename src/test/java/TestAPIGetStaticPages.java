@@ -4,8 +4,6 @@ import org.testng.annotations.BeforeTest;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import static com.jayway.restassured.RestAssured.get;
@@ -21,19 +19,21 @@ public class TestAPIGetStaticPages {
     }
 
     @DataProvider(name = "getStaticPages")
-    public Iterator<Object[]> getStaticPages() {
+    public Object[][] getStaticPages() {
         Response res = get("main/getstaticblocks/");
         assertEquals(200, res.getStatusCode());
         String teasersJson = res.asString();
 
         JsonPath jp = new JsonPath(teasersJson).setRoot("metadata");
         List<String> urls = jp.get("data.url");
-        List<Object[]> data = new ArrayList<Object[]>();
 
+        Object[][] data = new Object[urls.size()][];
+        int index = 0;
         for (String url : urls) {
-            data.add(new Object[]{url});
+            data[index] = new Object[]{url};
+            index++;
         }
-        return data.iterator();
+        return data;
     }
 
     @Test(dataProvider = "getStaticPages")

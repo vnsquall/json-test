@@ -5,7 +5,6 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import static com.jayway.restassured.RestAssured.get;
@@ -21,7 +20,7 @@ public class TestAPIGetTeasers {
     }
 
     @DataProvider(name = "getAndroidTeasers")
-    public Iterator<Object[]> getAndroidTeasers() {
+    public Object[][] getAndroidTeasers() {
         Response res = get("main/getteasers/");
         assertEquals(200, res.getStatusCode());
         String teasersJson = res.asString();
@@ -29,13 +28,16 @@ public class TestAPIGetTeasers {
         JsonPath jp = new JsonPath(teasersJson).setRoot("metadata");
         List<ArrayList<ArrayList<String>>> android_prod_urls = jp.get("data.data.attributes.image_list.product_url");
         ArrayList<ArrayList<String>> urls = android_prod_urls.get(0);
-        List<Object[]> data = new ArrayList<Object[]>();
+
+        Object[][] data = new Object[urls.size()][];
+        int index = 0;
 
         for(ArrayList<String> url : urls){
             String prod_url = url.get(0);
-            data.add(new Object[]{prod_url});
+            data[index] = new Object[]{prod_url};
+            index++;
         }
-        return data.iterator();
+        return data;
     }
 
     @Test(dataProvider = "getAndroidTeasers")
@@ -46,7 +48,7 @@ public class TestAPIGetTeasers {
     }
 
     @DataProvider(name = "getiOSTeasers")
-    public Iterator<Object[]> getiOSTeasers() {
+    public Object[][] getiOSTeasers() {
         Response res = get("main/getteasersios/");
         assertEquals(200, res.getStatusCode());
         String teasersJson = res.asString();
@@ -54,13 +56,15 @@ public class TestAPIGetTeasers {
         JsonPath jp = new JsonPath(teasersJson).setRoot("metadata");
         List<ArrayList<ArrayList<String>>> android_prod_urls = jp.get("data.data.attributes.image_list.product_url");
         ArrayList<ArrayList<String>> urls = android_prod_urls.get(0);
-        List<Object[]> data = new ArrayList<Object[]>();
+        Object[][] data = new Object[urls.size()][];
+        int index = 0;
 
         for(ArrayList<String> url : urls){
             String prod_url = url.get(0);
-            data.add(new Object[]{prod_url});
+            data[index] = new Object[]{prod_url};
+            index++;
         }
-        return data.iterator();
+        return data;
     }
 
     @Test(dataProvider = "getiOSTeasers")
