@@ -17,6 +17,7 @@ public class TestAPIGetAppInitCall {
     public void setup(){
         RestSetup.Setup();
     }
+
     @DataProvider
     Object[][] getMobileAppInitCallAPI(){
         return new Object[][]{
@@ -28,6 +29,7 @@ public class TestAPIGetAppInitCall {
                 {"main/getstatic?key=faq_ios"}
         };
     }
+
     @Test(dataProvider = "getMobileAppInitCallAPI")
     public void test_001_InitAPICall(String uriAPI){
         Response res = get(uriAPI);

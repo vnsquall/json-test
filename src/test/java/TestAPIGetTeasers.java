@@ -1,11 +1,11 @@
-
 import com.jayway.restassured.path.json.JsonPath;
 import com.jayway.restassured.response.Response;
 import org.testng.annotations.BeforeTest;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import static com.jayway.restassured.RestAssured.get;
@@ -20,46 +20,53 @@ public class TestAPIGetTeasers {
         RestSetup.Setup();
     }
 
-    @Test
-    public void test_001_AndroidTeasers(){
+    @DataProvider(name = "getAndroidTeasers")
+    public Iterator<Object[]> getAndroidTeasers() {
         Response res = get("main/getteasers/");
         assertEquals(200, res.getStatusCode());
-
         String teasersJson = res.asString();
+
         JsonPath jp = new JsonPath(teasersJson).setRoot("metadata");
         List<ArrayList<ArrayList<String>>> android_prod_urls = jp.get("data.data.attributes.image_list.product_url");
-//        System.out.println(android_prod_urls);
-
-        //Only get the first part of data response
         ArrayList<ArrayList<String>> urls = android_prod_urls.get(0);
+        List<Object[]> data = new ArrayList<Object[]>();
 
-//        System.out.println(urls.toString());
         for(ArrayList<String> url : urls){
-            //Only get the url
-            String and_prod_url = url.get(0);
-            res = get(and_prod_url);
-            assertEquals(200, res.getStatusCode());
-            System.out.println("Get android Teaser: "+and_prod_url+" successful");
+            String prod_url = url.get(0);
+            data.add(new Object[]{prod_url});
         }
+        return data.iterator();
     }
 
-    @Test
-    public void test_002_iOSTeasers(){
+    @Test(dataProvider = "getAndroidTeasers")
+    public void test_001_AndroidTeasers(String url) {
+        Response res = get(url);
+        assertEquals(200, res.getStatusCode());
+        System.out.println("Get android Teaser: " + url + " successful");
+    }
+
+    @DataProvider(name = "getiOSTeasers")
+    public Iterator<Object[]> getiOSTeasers() {
         Response res = get("main/getteasersios/");
         assertEquals(200, res.getStatusCode());
+        String teasersJson = res.asString();
 
-        String categoriesJson = res.asString();
-        JsonPath jp = new JsonPath(categoriesJson).setRoot("metadata");
-        List<ArrayList<ArrayList<String>>> ios_prod_urls = jp.get("data.data.attributes.image_list.product_url");
-//        System.out.println(ios_prod_urls);
+        JsonPath jp = new JsonPath(teasersJson).setRoot("metadata");
+        List<ArrayList<ArrayList<String>>> android_prod_urls = jp.get("data.data.attributes.image_list.product_url");
+        ArrayList<ArrayList<String>> urls = android_prod_urls.get(0);
+        List<Object[]> data = new ArrayList<Object[]>();
 
-        ArrayList<ArrayList<String>> urls = ios_prod_urls.get(0);
         for(ArrayList<String> url : urls){
-            //Only get the url
-            String ios_prod_url = url.get(0);
-            res = get(ios_prod_url);
-            assertEquals(200, res.getStatusCode());
-            System.out.println("Get iOS Teaser: "+ios_prod_url+" successful");
+            String prod_url = url.get(0);
+            data.add(new Object[]{prod_url});
         }
+        return data.iterator();
+    }
+
+    @Test(dataProvider = "getiOSTeasers")
+    public void test_002_iOSTeasers(String url) {
+        Response res = get(url);
+        assertEquals(200, res.getStatusCode());
+        System.out.println("Get iOS Teaser: " + url + " successful");
     }
 }
