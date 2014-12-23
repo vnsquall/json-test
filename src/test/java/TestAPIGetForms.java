@@ -36,7 +36,7 @@ public class TestAPIGetForms {
         return data;
     }
 
-    @Test
+    @Test(dataProvider = "getFormsRequest")
     public void test_FormsRequest(String url) {
         Response res = get(url);
         assertEquals(200, res.getStatusCode());
