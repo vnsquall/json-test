@@ -22,7 +22,7 @@ public class TestAPILogin {
     Object[][] getQueryForSearch() {
         return new Object[][]{
                 {"qa000@mail.com", "a12345"},
-                {"uteste@mail.com", "a12345"}
+                {"utester@mail.com", "a12345"}
         };
     }
 
